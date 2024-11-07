@@ -46,7 +46,7 @@ public class UserLicenseServiceImpl implements UserLicenseService {
         return userLicenseOptional.get();
     }
     @Override
-    @Cacheable(value = "licenseCache", key = "#userId + '-' + #appId")
+//    @Cacheable(value = "licenseCache", key = "#userId + '-' + #appId")
     public UserLicenseFloatAbleDTO isLicenseKeyValid(Long userId, Long appId, String loginId, String keyValue) {
         Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppIdAndLicenseKeyKeyValue(userId, appId, keyValue);
 
