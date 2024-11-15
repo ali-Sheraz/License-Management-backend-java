@@ -34,7 +34,8 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
 
     @Autowired
     private SubscriptionPlanRepository subscriptionPlanRepository;
-
+    @Autowired
+    private AuditLogRepository auditLogRepository;
 
     @Autowired
     private LicenseKeyRepository licenseKeyRepository;
@@ -87,7 +88,7 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
             userSubscriptionPlan.setCreatedBy("System");
             userSubscriptionPlan.setStartDate(startDate);
             userSubscriptionPlan.setEndDate(endDate);
-            userSubscriptionPlanRepository.save(userSubscriptionPlan);
+            UserSubscriptionPlan savedUserSubscriptionPlan= userSubscriptionPlanRepository.save(userSubscriptionPlan);
 
             LicenseKey savedLicenseKey = null;
             Application application = null;
@@ -106,6 +107,16 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
                 savedLicenseKey = updateGenerateLicenseKey(appId, application, endDate);
                 userLicenseUpdate = self.updatedLicenseUser(userId, appId, previousKey, application, savedLicenseKey, application.getOwner());
             }
+            //Saved audit log for updation of user subscriptionPlan
+            AuditLog auditLog = new AuditLog();
+            auditLog.setAction("UPDATE");
+            auditLog.setEntityName("UserSubscriptionPlan");
+            auditLog.setEntityId(savedUserSubscriptionPlan.getUserSubscriptionId());
+            auditLog.setCreatedOn(new Date());
+            auditLog.setCreatedBy(savedUserSubscriptionPlan.getCreatedBy()); // Assuming you set `createdBy` during user registration
+            auditLog.setDetails("UserSubscriptionPlan registered");
+            auditLogRepository.save(auditLog);
+
             return getDataTransferDTO(savedLicenseKey, application);
         } else {
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_SUBSCRIPTION_ID);

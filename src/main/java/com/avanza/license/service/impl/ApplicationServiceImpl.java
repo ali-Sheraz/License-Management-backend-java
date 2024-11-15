@@ -32,7 +32,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @Autowired
     private UserTableRepository userTableRepository;
-
+    @Autowired
+    private AuditLogRepository auditLogRepository;
     @Value("${client.id}")
     private String clientId;
 
@@ -99,6 +100,16 @@ public class ApplicationServiceImpl implements ApplicationService {
         UserLicense savedUserLicense = saveUserLicense(savedApplication, owner, savedLicenseKey);
         validModules.forEach(module -> saveUserModule(owner, savedApplication, module));
 
+        // Log the action in the AuditLog
+        AuditLog auditLog = new AuditLog();
+        auditLog.setAction("REGISTER");
+        auditLog.setEntityName("Application");
+        auditLog.setEntityId(savedApplication.getAppId());
+        auditLog.setCreatedOn(new Date());
+        auditLog.setCreatedBy(app.getCreatedBy()); // Assuming you set `createdBy` during user registration
+        auditLog.setDetails("Application registered");
+
+        auditLogRepository.save(auditLog); // Save the audit log entry
         return getDataTransferDTO(savedUserLicense, validModules);
     }
 
@@ -249,7 +260,6 @@ public class ApplicationServiceImpl implements ApplicationService {
                 }
             }
         }
-
         existingApp.setModules(existingModules);
         return applicationRepository.save(existingApp);
     }

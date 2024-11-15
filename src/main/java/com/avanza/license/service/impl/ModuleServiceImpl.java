@@ -3,8 +3,10 @@ package com.avanza.license.service.impl;
 import com.avanza.license.Enum.ErrorCode;
 
 import com.avanza.license.entity.Application;
+import com.avanza.license.entity.AuditLog;
 import com.avanza.license.entity.Module;
 
+import com.avanza.license.repositories.AuditLogRepository;
 import com.avanza.license.repositories.ModuleRepository;
 import com.avanza.license.service.ModuleService;
 import com.avanza.license.util.ErrorHandlerUtil;
@@ -21,12 +23,22 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Autowired
     private ModuleRepository moduleRepository;
-
+    @Autowired
+    private AuditLogRepository auditLogRepository;
 
     @Override
     public Module saveModule(Module module) {
-        return moduleRepository.save(module);
-
+        Module savedModule= moduleRepository.save(module);
+        // Log the action in the AuditLog
+        AuditLog auditLog = new AuditLog();
+        auditLog.setAction("REGISTER");
+        auditLog.setEntityName("Module");
+        auditLog.setEntityId(module.getModuleId());
+        auditLog.setCreatedOn(new Date());
+        auditLog.setCreatedBy(module.getCreatedBy()); // Assuming you set `createdBy` during user registration
+        auditLog.setDetails("Module registered");
+        auditLogRepository.save(auditLog);
+        return savedModule;
     }
     @Override
     public Module getModuleById(Long moduleId) {

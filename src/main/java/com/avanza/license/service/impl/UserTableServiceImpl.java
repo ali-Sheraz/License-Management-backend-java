@@ -1,7 +1,9 @@
 package com.avanza.license.service.impl;
 
 import com.avanza.license.Enum.ErrorCode;
+import com.avanza.license.entity.AuditLog;
 import com.avanza.license.entity.UserTable;
+import com.avanza.license.repositories.AuditLogRepository;
 import com.avanza.license.repositories.UserTableRepository;
 import com.avanza.license.service.UserTableService;
 import com.avanza.license.util.ErrorHandlerUtil;
@@ -18,15 +20,32 @@ public class UserTableServiceImpl implements UserTableService {
 
     @Autowired
     private UserTableRepository userTableRepository;
+    @Autowired
+    private AuditLogRepository auditLogRepository;
 
     @Override
     public UserTable saveUser(UserTable user) {
-        String email= user.getEmail();
+        String email = user.getEmail();
         Optional<UserTable> userTableOptional = userTableRepository.findByEmail(email);
         if (userTableOptional.isPresent()) {
             ErrorHandlerUtil.handleError(ErrorCode.DUPLICATE_EMAIL);
         }
-        return userTableRepository.save(user);
+
+        // Save the user
+        UserTable savedUser = userTableRepository.save(user);
+
+        // Log the action in the AuditLog
+        AuditLog auditLog = new AuditLog();
+        auditLog.setAction("REGISTER");
+        auditLog.setEntityName("UserTable");
+        auditLog.setEntityId(savedUser.getUserId());
+        auditLog.setCreatedOn(new Date());
+        auditLog.setCreatedBy(user.getCreatedBy()); // Assuming you set `createdBy` during user registration
+        auditLog.setDetails("User registered");
+
+        auditLogRepository.save(auditLog); // Save the audit log entry
+
+        return savedUser;
     }
 
     @Override
@@ -55,7 +74,20 @@ public class UserTableServiceImpl implements UserTableService {
             existingUser.setUpdatedBy(user.getUpdatedBy());
             existingUser.setCreatedOn(new Date());
             existingUser.setCreatedBy(user.getUpdatedBy());
-            return userTableRepository.save(existingUser);
+            UserTable updatedUser = userTableRepository.save(existingUser);
+
+            // Log the action in the AuditLog
+            AuditLog auditLog = new AuditLog();
+            auditLog.setAction("UPDATE");
+            auditLog.setEntityName("UserTable");
+            auditLog.setEntityId(updatedUser.getUserId());
+            auditLog.setCreatedOn(new Date()); // When the log is created
+            auditLog.setCreatedBy(user.getUpdatedBy()); // Who performed the update
+            auditLog.setDetails("User updated");
+
+            auditLogRepository.save(auditLog);
+
+            return updatedUser;
         } else {
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID);
             return null;

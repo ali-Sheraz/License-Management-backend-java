@@ -35,4 +35,14 @@ public class CertificateController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PutMapping("/updateCertificateNew/{subscriptionId}")
+    public ResponseEntity<String> updateCerCertificateWithMaxUser(@RequestParam("file") MultipartFile file,@PathVariable long subscriptionId) {
+        try {
+            SubscriptionPlan certificateDetails = certificateService.updateCerCertificateWithMaxUser(file,subscriptionId);
+            return new ResponseEntity<>("Certificate updated successfully! Details: \n" + certificateDetails, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
