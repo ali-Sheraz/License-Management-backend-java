@@ -2,7 +2,9 @@ package com.avanza.license.service.impl;
 
 import com.avanza.license.Dto.CertificateDetails;
 import com.avanza.license.Enum.ErrorCode;
+import com.avanza.license.entity.Application;
 import com.avanza.license.entity.SubscriptionPlan;
+import com.avanza.license.repositories.ApplicationRepository;
 import com.avanza.license.repositories.SubscriptionPlanRepository;
 import com.avanza.license.service.CertificateService;
 import com.avanza.license.util.ErrorHandlerUtil;
@@ -26,6 +28,9 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
     private SubscriptionPlanRepository subscriptionPlanRepository;
+
+    @Autowired
+    private ApplicationRepository applicationRepository;
 
     @Override
     public SubscriptionPlan uploadCerCertificate(MultipartFile file) throws Exception {
@@ -103,7 +108,7 @@ public class CertificateServiceImpl implements CertificateService {
             return null;
         }
     }
-
+//update only subscription plan expiry date
     @Override
     public SubscriptionPlan updateCerCertificate(MultipartFile file,long subscriptionId) throws Exception {
         if (file.isEmpty()) {
@@ -181,4 +186,95 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
+    //update only subscription plan expiry date and ma user also
+    @Override
+    public SubscriptionPlan updateCerCertificateWithMaxUser(MultipartFile file,long subscriptionId) throws Exception {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Please upload a file!");
+        }
+
+        try {
+            // Read the file content
+            byte[] fileContent = file.getBytes();
+            ByteArrayInputStream is = new ByteArrayInputStream(fileContent);
+
+            // Load the certificate
+            CertificateFactory cf = CertificateFactory.getInstance("X.509");
+            X509Certificate x509Cert = (X509Certificate) cf.generateCertificate(is);
+
+//                Check if the certificate is expired
+            Date now = new Date();
+            if (now.after(x509Cert.getNotAfter())) {
+                throw new Exception("Certificate has expired. Please upload a valid certificate.");
+            }
+
+            // Prepare certificate details
+            CertificateDetails certificateDetails = new CertificateDetails(
+                    x509Cert.getSubjectDN().getName(),
+                    x509Cert.getIssuerDN().getName(),
+                    x509Cert.getSerialNumber().toString(),
+                    x509Cert.getNotBefore(),
+                    x509Cert.getNotAfter(),
+                    x509Cert.getSigAlgName(),
+                    x509Cert.getVersion(),
+                    x509Cert.getPublicKey().toString(),
+                    null
+            );
+
+            // Encode the certificate in PEM format
+            String pemCert = "-----BEGIN CERTIFICATE-----\n"
+                    + Base64.getEncoder().encodeToString(x509Cert.getEncoded())
+                    + "\n-----END CERTIFICATE-----";
+            certificateDetails.setPemEncodedCertificate(pemCert);
+
+            return updateInsertedSubscriptionPlanWithApplicationMaxUser(certificateDetails,subscriptionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new Exception("Failed to read or process certificate. Error: " + e.getMessage());
+        }
+    }
+    private SubscriptionPlan updateInsertedSubscriptionPlanWithApplicationMaxUser(CertificateDetails certificateDetails,long subscriptionId) {
+        try {
+            String appId=ErrorHandlerUtil.getApplicationId(certificateDetails.getSubject());
+            Optional<SubscriptionPlan> sOptional=subscriptionPlanRepository.findBySubscriptionId(subscriptionId);
+            Optional<Application> appOptional=applicationRepository.findByAppId(Long.valueOf(appId));
+            if (!sOptional.isPresent()) {
+                ErrorHandlerUtil.handleError(ErrorCode.INVALID_SUBSCRIPTION_ID);
+            }
+            SubscriptionPlan existingSubscriptionPlan=sOptional.get();
+            Timestamp startDate = Timestamp.from(certificateDetails.getValidFrom().toInstant());
+            Timestamp endDate = Timestamp.from(certificateDetails.getExpiryDate().toInstant());
+
+            // Calculate months between dates
+            LocalDate startLocalDate = startDate.toLocalDateTime().toLocalDate();
+            LocalDate endLocalDate = endDate.toLocalDateTime().toLocalDate();
+            long monthsBetween = ChronoUnit.MONTHS.between(startLocalDate, endLocalDate);
+            existingSubscriptionPlan.setName(ErrorHandlerUtil.getOrganizationName(certificateDetails.getSubject())); // Get organization name
+            existingSubscriptionPlan.setDescription(ErrorHandlerUtil.getCommonName(certificateDetails.getSubject())); // Get common name
+            existingSubscriptionPlan.setStartDate(startDate);
+            existingSubscriptionPlan.setEndDate(endDate);
+            existingSubscriptionPlan.setDurationMonths(monthsBetween);
+            existingSubscriptionPlan.setCreatedOn(new Date());
+            existingSubscriptionPlan.setCreatedBy("system");
+            existingSubscriptionPlan.setUpdatedOn(new Date());
+            existingSubscriptionPlan.setUpdatedBy("System");
+
+            if (!sOptional.isPresent()) {
+                ErrorHandlerUtil.handleError(ErrorCode.INVALID_APP_ID);
+            }
+            Application existingApplication=appOptional.get();
+            existingApplication.setMaxUsers(ErrorHandlerUtil.getMaxUser(certificateDetails.getSubject()));
+            existingApplication.setCreatedOn(new Date());
+            existingApplication.setCreatedBy("system");
+            existingApplication.setUpdatedOn(new Date());
+            existingApplication.setUpdatedBy("System");
+            applicationRepository.save(existingApplication);
+            return subscriptionPlanRepository.save(existingSubscriptionPlan);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
+

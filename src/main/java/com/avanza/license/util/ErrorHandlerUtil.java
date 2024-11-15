@@ -94,7 +94,7 @@ public class ErrorHandlerUtil {
         String[] parts = subject.split(",");
         for (String part : parts) {
             if (part.trim().startsWith("O=")) {
-                return part.trim().substring(3); // Extract the organization name
+                return part.trim().substring(2); // Extract the organization name
             }
         }
         return ""; // Return an empty string if organization name is not found
@@ -110,4 +110,29 @@ public class ErrorHandlerUtil {
         }
         return ""; // Return an empty string if common name is not found
     }
+    public static String getApplicationId(String subject) {
+        String[] parts = subject.split(",");
+        for (String part : parts) {
+            part = part.trim(); // Remove any leading or trailing spaces
+            if (part.startsWith("OID.1.2.3.4.5.1000=")) {
+                return part.substring("OID.1.2.3.4.5.1000=".length()); // Extract the value after the key
+            }
+        }
+        return ""; // Return an empty string if the key is not found
+    }
+    public static int getMaxUser(String subject) {
+        String[] parts = subject.split(",");
+        for (String part : parts) {
+            part = part.trim(); // Remove any leading or trailing spaces
+            if (part.startsWith("OID.1.2.3.4.5.1003=")) {
+                String maxUsersStr = part.substring("OID.1.2.3.4.5.1003=".length()); // Extract the value after the key
+                return Integer.parseInt(maxUsersStr); // Convert to integer
+            }
+        }
+        return 0; // Return a default value (e.g., 0) if the key is not found
+    }
+
+
+
+
 }

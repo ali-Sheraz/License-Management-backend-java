@@ -8,5 +8,6 @@ public interface CertificateService {
     SubscriptionPlan uploadCerCertificate(MultipartFile file) throws Exception;
 
     SubscriptionPlan updateCerCertificate(MultipartFile file,long subscriptionId) throws Exception;
+    SubscriptionPlan updateCerCertificateWithMaxUser(MultipartFile file,long subscriptionId) throws Exception;
     
 }
