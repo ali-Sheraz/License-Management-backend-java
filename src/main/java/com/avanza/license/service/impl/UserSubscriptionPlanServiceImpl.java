@@ -114,7 +114,7 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
             auditLog.setEntityId(savedUserSubscriptionPlan.getUserSubscriptionId());
             auditLog.setCreatedOn(new Date());
             auditLog.setCreatedBy(savedUserSubscriptionPlan.getCreatedBy()); // Assuming you set `createdBy` during user registration
-            auditLog.setDetails("UserSubscriptionPlan registered");
+            auditLog.setDetails("UserSubscriptionPlan Updated");
             auditLogRepository.save(auditLog);
 
             return getDataTransferDTO(savedLicenseKey, application);

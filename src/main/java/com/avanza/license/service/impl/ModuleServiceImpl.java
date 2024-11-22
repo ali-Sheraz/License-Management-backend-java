@@ -68,6 +68,10 @@ public class ModuleServiceImpl implements ModuleService {
         existingModule.setDescription(updateModule.getDescription());
         existingModule.setName(updateModule.getName());
         existingModule.setIdentificationKey(updateModule.getIdentificationKey());
+        existingModule.setCreatedBy("System");
+        existingModule.setUpdatedBy("System");
+        existingModule.setCreatedOn(new Date());
+        existingModule.setUpdatedOn(new Date());
         return moduleRepository.save(existingModule);
     }
 
