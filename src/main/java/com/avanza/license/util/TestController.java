@@ -1,6 +1,8 @@
 package com.avanza.license.util;
 
 import com.avanza.license.Dto.CertificateDetails;
+import com.avanza.license.Dto.ModuleDto;
+import com.avanza.license.Dto.RedisSetCertData;
 import com.avanza.license.Dto.UserLicenseFloatAbleDTO;
 import com.avanza.license.entity.SubscriptionPlan;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,11 +20,18 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.NetworkInterface;
 import java.security.KeyStore;
+import java.security.MessageDigest;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,12 +83,107 @@ public class TestController {
                     + Base64.getEncoder().encodeToString(x509Cert.getEncoded())
                     + "\n-----END CERTIFICATE-----";
             certificateDetails.setPemEncodedCertificate(pemCert);
-            List<String> moduleNames = ErrorHandlerUtil.getModulesList(certificateDetails.getSubject());
 
-            return new ResponseEntity<>("Certificate uploaded successfully! Details: \n" + moduleNames, HttpStatus.OK);
+            return new ResponseEntity<>("Certificate uploaded successfully! Details: \n" + certificateDetails, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/generate-client-key")
+    public String generateClientKey() {
+        try {
+            // Fetch BIOS UUID
+            String biosUuid = getBiosUuid();
+            System.out.println("Bios ID:"+biosUuid);
+
+            // Fetch Ethernet MAC Address
+            String ethernetMac = getEthernetMacAddress();
+            System.out.println("ethernetMac:"+ethernetMac);
+
+            // Combine BIOS UUID and Ethernet MAC
+            String combinedData = biosUuid + ethernetMac;
+
+
+            // Generate SHA-256 hash
+            return generateSha256Hash(combinedData);
+        } catch (Exception e) {
+            return "Error generating client key: " + e.getMessage();
+        }
+    }
+
+    private String getBiosUuid() throws Exception {
+        String os = System.getProperty("os.name").toLowerCase();
+        Process process;
+        String biosUuid = "UNKNOWN_UUID";  // Default if UUID retrieval fails
+
+        if (os.contains("win")) {
+            process = Runtime.getRuntime().exec("wmic csproduct get UUID");
+        } else if (os.contains("nix") || os.contains("nux")) {
+            // Ensure the process has sufficient privileges to run 'dmidecode'
+            process = Runtime.getRuntime().exec("sudo dmidecode -s system-uuid");
+        } else {
+            throw new UnsupportedOperationException("Unsupported OS: " + os);
+        }
+
+        int exitCode = process.waitFor();  // Wait for process to finish
+        if (exitCode != 0) {
+            throw new RuntimeException("Failed to retrieve BIOS UUID, process exit code: " + exitCode);
+        }
+
+        // Read the command output to get the UUID
+        try (Scanner scanner = new Scanner(process.getInputStream())) {
+            // Skip the header line (first line)
+            if (scanner.hasNextLine()) {
+                scanner.nextLine(); // Skip the "UUID" header
+            }
+
+            // Check if there is a second line with the UUID (skip any blank lines or extra spaces)
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine().trim();
+                if (!line.isEmpty()) {
+                    biosUuid = line;  // Capture the UUID from the second non-empty line
+                    break;
+                }
+            }
+
+            // Debugging output
+            System.out.println("Found BIOS UUID: " + biosUuid);
+        }
+
+        return biosUuid;
+    }
+
+    private String getEthernetMacAddress() throws Exception {
+        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
+            byte[] mac = networkInterface.getHardwareAddress();
+
+            // Check if MAC address exists and skip virtual interfaces
+            if (mac != null && !networkInterface.isVirtual() && networkInterface.getName().contains("eth")) {
+                StringBuilder macAddress = new StringBuilder();
+                for (byte b : mac) {
+                    macAddress.append(String.format("%02X:", b));
+                }
+                return macAddress.substring(0, macAddress.length() - 1); // Remove trailing colon
+            }
+        }
+        return "UNKNOWN_MAC";
+    }
+
+    private String generateSha256Hash(String data) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(data.getBytes("UTF-8"));
+
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
 }

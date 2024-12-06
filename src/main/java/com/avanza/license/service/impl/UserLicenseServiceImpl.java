@@ -160,4 +160,31 @@ public class UserLicenseServiceImpl implements UserLicenseService {
     public List<UserLicense> getUserLicenseByUserId(Long userId) {
         return userLicenseRepository.findByUserTableUserId(userId);
     }
+    @Override
+    public IsLicenseExpiredDTO isLicenseExpired(LicenseRequestParam licenseRequestParam) {
+        long userId=licenseRequestParam.getUserId();
+        long appId=licenseRequestParam.getAppId();
+        String keyValue=licenseRequestParam.getKeyValue();
+        Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppIdAndLicenseKeyKeyValue(userId, appId, keyValue);
+
+        if (userLicenseAllOptional.isEmpty()) {
+            ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID_LICENSE_KEY);
+        }
+
+        UserLicense userLicense = userLicenseAllOptional.get();
+
+        // Convert the Timestamp to LocalDate
+        LocalDate currentDate = LocalDate.now();
+        LocalDate expiryDate = userLicense.getLicenseKey().getExpirationDate().toLocalDateTime().toLocalDate();
+
+        if (currentDate.isAfter(expiryDate)) {
+            ErrorHandlerUtil.handleError(ErrorCode.LICENSE_KEY_EXPIRED);
+        }
+        return getIsLicenseExpiredDTO(userLicense);
+    }
+    private IsLicenseExpiredDTO getIsLicenseExpiredDTO(UserLicense userLicense) {
+        IsLicenseExpiredDTO dto = new IsLicenseExpiredDTO();
+        dto.setExpirationDate(Timestamp.valueOf(userLicense.getLicenseKey().getExpirationDate().toLocalDateTime()));
+        return dto;
+    }
 }

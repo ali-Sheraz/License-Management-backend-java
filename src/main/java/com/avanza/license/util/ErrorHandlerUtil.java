@@ -168,6 +168,18 @@ public static void handleError(ErrorCode errorCode) {
         }
         return ""; // Return an empty string if the key is not found
     }
+    public static String getUserId(String subject) {
+        String[] parts = subject.split(",");
+        for (String part : parts) {
+            part = part.trim(); // Remove any leading or trailing spaces
+            if (part.startsWith("OID.1.2.3.4.5.1001=")) {
+                return part.substring("OID.1.2.3.4.5.1001=".length()); // Extract the value after the key
+            }
+        }
+        return ""; // Return an empty string if the key is not found
+    }
+
+
     public static int getMaxUser(String subject) {
         String[] parts = subject.split(",");
         for (String part : parts) {
@@ -197,6 +209,16 @@ public static void handleError(ErrorCode errorCode) {
         }
 
         return new ArrayList<>(); // Return an empty list if the key is not found
+    }
+    public static String getLicneseKey(String subject) {
+        String[] parts = subject.split(",");
+        for (String part : parts) {
+            part = part.trim(); // Remove any leading or trailing spaces
+            if (part.startsWith("OID.1.2.3.4.5.1004=")) {
+                return part.substring("OID.1.2.3.4.5.1004=".length()); // Extract the value after the key
+            }
+        }
+        return ""; // Return an empty string if the key is not found
     }
 
 }

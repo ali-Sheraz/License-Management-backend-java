@@ -8,6 +8,7 @@ import com.avanza.license.repositories.UserTableRepository;
 import com.avanza.license.service.UserTableService;
 import com.avanza.license.util.ErrorHandlerUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -17,7 +18,8 @@ import java.util.Optional;
 
 @Service
 public class UserTableServiceImpl implements UserTableService {
-
+@Autowired
+private PasswordEncoder passwordEncoder;
     @Autowired
     private UserTableRepository userTableRepository;
     @Autowired
@@ -30,7 +32,7 @@ public class UserTableServiceImpl implements UserTableService {
         if (userTableOptional.isPresent()) {
             ErrorHandlerUtil.handleError(ErrorCode.DUPLICATE_EMAIL);
         }
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         // Save the user
         UserTable savedUser = userTableRepository.save(user);
 

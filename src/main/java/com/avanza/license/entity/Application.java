@@ -48,6 +48,12 @@ public class Application {
     @Column(name = "IS_ACTIVE", nullable = false)
     private Boolean isActive;
 
+    @Column(name = "MAC_ADDRESS")
+    private String macAddress;
+
+    @Column(name = "BIOS_ID")
+    private String biosId;
+
     @Column(name = "CREATED_ON")
     private Date createdOn;
 

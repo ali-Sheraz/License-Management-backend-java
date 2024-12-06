@@ -1,5 +1,6 @@
 package com.avanza.license.controller;
 
+import com.avanza.license.Dto.IsLicenseExpiredDTO;
 import com.avanza.license.Dto.LicenseRequestParam;
 import com.avanza.license.Dto.SessionDTO;
 import com.avanza.license.Dto.UserLicenseFloatAbleDTO;
@@ -41,6 +42,11 @@ public class UserLicenseController {
     @PostMapping("/userLicenseFloatAbleMatrix")
     public ResponseEntity<UserLicenseFloatAbleDTO> isLicenseKeyValidForFloatAbleMatrix(@RequestBody LicenseRequestParam licenseRequestParam) {
         UserLicenseFloatAbleDTO UserLicense = userLicenseService.isLicenseKeyValidForFloatAbleMatrix(licenseRequestParam);
+        return new ResponseEntity<>(UserLicense, HttpStatus.OK);
+    }
+    @GetMapping("/isLicenseExpiredUser")
+    public ResponseEntity<IsLicenseExpiredDTO> isLicenseExpired(@RequestBody LicenseRequestParam licenseRequestParam) {
+        IsLicenseExpiredDTO UserLicense = userLicenseService.isLicenseExpired(licenseRequestParam);
         return new ResponseEntity<>(UserLicense, HttpStatus.OK);
     }
 

@@ -27,6 +27,9 @@ public class UserTable {
     @Column(name = "EMAIL", nullable = false)
     private String email;
 
+    @Column(name = "ROLE") // Add role field
+    private String role;
+
     @Column(name = "CREATED_ON")
     private Date createdOn;
 

@@ -1,5 +1,6 @@
 package com.avanza.license.service;
 
+import com.avanza.license.Dto.IsLicenseExpiredDTO;
 import com.avanza.license.Dto.LicenseRequestParam;
 import com.avanza.license.Dto.SessionDTO;
 import com.avanza.license.Dto.UserLicenseFloatAbleDTO;
@@ -18,6 +19,8 @@ public interface UserLicenseService {
     SessionDTO insertingSession(Long userId, Long appId, String loginId);
 
     List<UserLicense> getUserLicenseByUserId(Long userId);
+
+    IsLicenseExpiredDTO isLicenseExpired(LicenseRequestParam licenseRequestParam);
 
 }
 

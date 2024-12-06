@@ -1,8 +1,11 @@
 package com.avanza.license.util;
 
 import com.avanza.license.util.CustomApplicationException;
+
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -50,6 +53,5 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseBody, HttpStatus.valueOf(ex.getstatusCode()));
     }
 
-    // Other exception handlers if needed
 }
 
