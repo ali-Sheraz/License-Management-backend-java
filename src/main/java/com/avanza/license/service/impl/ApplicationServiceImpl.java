@@ -156,9 +156,10 @@ public class ApplicationServiceImpl implements ApplicationService {
             System.out.println("ethernetMac:"+ethernetMac);
 
             String encryptedKey = biosUuid + ethernetMac;
+            String generatedHexKey=generateSha256Hash(encryptedKey);
 
             LicenseKey licenseKey = new LicenseKey();
-            licenseKey.setKeyValue(encryptedKey);
+            licenseKey.setKeyValue(generatedHexKey);
             licenseKey.setIsActive(true);
             licenseKey.setExpirationDate(expiryDate);
             licenseKey.setApplication(application);
