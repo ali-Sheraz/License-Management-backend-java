@@ -31,7 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/v1/authenticate", "/h2/**","/v1/generate-client-key","/v1/certificate-info","/v1/uploadCertificateDetail","/v1/userLicenseFloatAbleMatrix/**","/v1/userLicenseKey/**","/v1/insertingSession/**","/v1/deleteUserSession/**","/v2/**","/v1/isLicenseExpiredUser/**").permitAll()  // Allow authentication endpoint
+                .antMatchers("/v1/authenticate", "/h2/**","/v2/**","/v1/**").permitAll()  // Allow authentication endpoint
                 .antMatchers("/v1/userTable/**").hasRole("ADMIN")  // Only allow admins to access user table
                 .anyRequest().authenticated()  // Any other request requires authentication
                 .and()
