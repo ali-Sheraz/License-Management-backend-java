@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
+@RequestMapping("/v2")
 public class UserTableController {
 
     @Autowired
     private UserTableService userTableService;
 
-    @PostMapping("/userTable")
-    public ResponseEntity<UserTable> saveUser(@RequestBody UserTable user) {
-        UserTable savedUser = userTableService.saveUser(user);
-        return new ResponseEntity<>(savedUser, HttpStatus.OK);
-    }
+//    @PostMapping("/userTable")
+//    public ResponseEntity<UserTable> saveUser(@RequestBody UserTable user) {
+//        UserTable savedUser = userTableService.saveUser(user);
+//        return new ResponseEntity<>(savedUser, HttpStatus.OK);
+//    }
 
     @GetMapping("/userTable")
     public ResponseEntity<List<UserTable>> getAllUser() {
