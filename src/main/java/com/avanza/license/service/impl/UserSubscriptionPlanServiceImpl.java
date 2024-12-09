@@ -18,12 +18,11 @@ import org.springframework.stereotype.Service;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import java.net.NetworkInterface;
+import java.security.MessageDigest;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +56,7 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
     }
 
     @Override
-    public DataTransferDTO updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId) {
+    public DataTransferDTO updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId,String macAddress,String biosId) {
         Optional<UserSubscriptionPlan> userSubscriptionPlanOptonal = userSubscriptionPlanRepository.findByUserTableUserIdAndApplicationAppId(userId, appId);
         if (!userSubscriptionPlanOptonal.isPresent()) {
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID);
@@ -104,7 +103,7 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
                     LicenseKey keyValue = optionalLicenseKeyValue.get();
                     previousKey = keyValue.getKeyValue();
                 }
-                savedLicenseKey = updateGenerateLicenseKey(appId, application, endDate);
+                savedLicenseKey = updateGenerateLicenseKey(appId, application, endDate,macAddress,biosId);
                 userLicenseUpdate = self.updatedLicenseUser(userId, appId, previousKey, application, savedLicenseKey, application.getOwner());
             }
             //Saved audit log for updation of user subscriptionPlan
@@ -143,14 +142,18 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
         return dataTransferDTO;
     }
 
-    private LicenseKey updateGenerateLicenseKey(Long appId, Application application, Timestamp expiryDate) {
+    private LicenseKey updateGenerateLicenseKey(Long appId, Application application, Timestamp expiryDate,String macAddress,String biosId) {
         Optional<LicenseKey> licenseKeyOptional = licenseKeyRepository.findByApplicationAppId(appId);
         if (licenseKeyOptional.isPresent()) {
             LicenseKey licenseKey = licenseKeyOptional.get();
             try {
-                SecretKey secretKey = generateSecretKey();
-                String encryptedKey = encryptLicenseKey(clientId, secretKey);
-                licenseKey.setKeyValue(encryptedKey);
+//                SecretKey secretKey = generateSecretKey();
+//                String encryptedKey = encryptLicenseKey(clientId, secretKey);
+
+                String encryptedKey = biosId + macAddress ;
+                String generatedHexKey=generateSha256Hash(encryptedKey);
+
+                licenseKey.setKeyValue(generatedHexKey);
                 licenseKey.setIsActive(true);
                 licenseKey.setExpirationDate(expiryDate);
                 licenseKey.setApplication(application);
@@ -192,18 +195,6 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
         return null;
     }
 
-    private SecretKey generateSecretKey() throws Exception {
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(256);
-        return keyGen.generateKey();
-    }
-
-    private String encryptLicenseKey(String licenseKey, SecretKey secretKey) throws Exception {
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-        byte[] encryptedBytes = cipher.doFinal(licenseKey.getBytes());
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(encryptedBytes);
-    }
 
     @Override
     public UserSubscriptionPlan getUserSubscriptionByUserIdAndAppId(Long userId, Long appId) {
@@ -220,5 +211,29 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
     public List<UserSubscriptionPlan> getAllUserSubscriptionPlanByUserId(Long userId) {
         return userSubscriptionPlanRepository.findByUserTableUserId(userId);
     }
+    private SecretKey generateSecretKey() throws Exception {
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(256);
+        return keyGen.generateKey();
+    }
 
+    private String encryptLicenseKey(String licenseKey, SecretKey secretKey) throws Exception {
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+        byte[] encryptedBytes = cipher.doFinal(licenseKey.getBytes());
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(encryptedBytes);
+    }
+
+    private String generateSha256Hash(String data) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(data.getBytes("UTF-8"));
+
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
 }

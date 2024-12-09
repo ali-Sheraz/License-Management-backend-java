@@ -148,14 +148,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 //            SecretKey secretKey = generateSecretKey();
 //            String encryptedKey = encryptLicenseKey(clientId, secretKey);
 
-            String biosUuid = getBiosUuid();
-            System.out.println("Bios ID:"+biosUuid);
-
-
-            String ethernetMac = getEthernetMacAddress();
-            System.out.println("ethernetMac:"+ethernetMac);
-
-            String encryptedKey = biosUuid + ethernetMac;
+            String encryptedKey = application.getBiosId() + application.getMacAddress();
             String generatedHexKey=generateSha256Hash(encryptedKey);
 
             LicenseKey licenseKey = new LicenseKey();
@@ -304,63 +297,6 @@ public class ApplicationServiceImpl implements ApplicationService {
         cipher.init(Cipher.ENCRYPT_MODE, secretKey);
         byte[] encryptedBytes = cipher.doFinal(licenseKey.getBytes());
         return Base64.getUrlEncoder().withoutPadding().encodeToString(encryptedBytes);
-    }
-    private String getBiosUuid() throws Exception {
-        String os = System.getProperty("os.name").toLowerCase();
-        Process process;
-        String biosUuid = "UNKNOWN_UUID";  // Default if UUID retrieval fails
-
-        if (os.contains("win")) {
-            process = Runtime.getRuntime().exec("wmic csproduct get UUID");
-        } else if (os.contains("nix") || os.contains("nux")) {
-            // Ensure the process has sufficient privileges to run 'dmidecode'
-            process = Runtime.getRuntime().exec("sudo dmidecode -s system-uuid");
-        } else {
-            throw new UnsupportedOperationException("Unsupported OS: " + os);
-        }
-
-        int exitCode = process.waitFor();  // Wait for process to finish
-        if (exitCode != 0) {
-            throw new RuntimeException("Failed to retrieve BIOS UUID, process exit code: " + exitCode);
-        }
-
-        // Read the command output to get the UUID
-        try (Scanner scanner = new Scanner(process.getInputStream())) {
-            // Skip the header line (first line)
-            if (scanner.hasNextLine()) {
-                scanner.nextLine(); // Skip the "UUID" header
-            }
-
-            // Check if there is a second line with the UUID (skip any blank lines or extra spaces)
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-                if (!line.isEmpty()) {
-                    biosUuid = line;  // Capture the UUID from the second non-empty line
-                    break;
-                }
-            }
-        }
-
-        return biosUuid;
-    }
-
-    private String getEthernetMacAddress() throws Exception {
-        Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-
-        while (interfaces.hasMoreElements()) {
-            NetworkInterface networkInterface = interfaces.nextElement();
-            byte[] mac = networkInterface.getHardwareAddress();
-
-            // Check if MAC address exists and skip virtual interfaces
-            if (mac != null && !networkInterface.isVirtual() && networkInterface.getName().contains("eth")) {
-                StringBuilder macAddress = new StringBuilder();
-                for (byte b : mac) {
-                    macAddress.append(String.format("%02X:", b));
-                }
-                return macAddress.substring(0, macAddress.length() - 1); // Remove trailing colon
-            }
-        }
-        return "UNKNOWN_MAC";
     }
 
     private String generateSha256Hash(String data) throws Exception {

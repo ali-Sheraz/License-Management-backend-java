@@ -19,9 +19,9 @@ public class UserSubscriptionPlanController {
     @Autowired
     private UserSubscriptionPlanService userSubscriptionPlanService;
 
-    @PutMapping("/userSubscriptionPlan/{userId}/{appId}/{subscriptionId}")
-    public ResponseEntity<DataTransferDTO> updateUserSubscriptionPlanByUserSubIdAndSubName(@PathVariable Long userId, @PathVariable Long appId, @PathVariable Long subscriptionId) {
-        DataTransferDTO result = userSubscriptionPlanService.updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(userId, appId, subscriptionId);
+    @PutMapping("/userSubscriptionPlan/{userId}/{appId}/{subscriptionId}/{macAddress}/{biosId}")
+    public ResponseEntity<DataTransferDTO> updateUserSubscriptionPlanByUserSubIdAndSubName(@PathVariable Long userId, @PathVariable Long appId, @PathVariable Long subscriptionId,@PathVariable String macAddress,@PathVariable String biosId) {
+        DataTransferDTO result = userSubscriptionPlanService.updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(userId, appId, subscriptionId,macAddress,biosId);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

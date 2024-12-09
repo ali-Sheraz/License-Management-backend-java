@@ -62,9 +62,9 @@ public class UserLicenseServiceImpl implements UserLicenseService {
         LocalDate currentDate = LocalDate.now();
         LocalDate expiryDate = userLicense.getLicenseKey().getExpirationDate().toLocalDateTime().toLocalDate();
 
-        if (currentDate.isAfter(expiryDate)) {
-            ErrorHandlerUtil.handleError(ErrorCode.LICENSE_KEY_EXPIRED);
-        }
+//        if (currentDate.isAfter(expiryDate)) {
+//            ErrorHandlerUtil.handleError(ErrorCode.LICENSE_KEY_EXPIRED);
+//        }
 
         long userSessionCount = userSessionRepository.countByApplicationAppId(appId);
 

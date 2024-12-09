@@ -44,7 +44,7 @@ public class UserLicenseController {
         UserLicenseFloatAbleDTO UserLicense = userLicenseService.isLicenseKeyValidForFloatAbleMatrix(licenseRequestParam);
         return new ResponseEntity<>(UserLicense, HttpStatus.OK);
     }
-    @GetMapping("/isLicenseExpiredUser")
+    @PostMapping("/isLicenseExpiredUser")
     public ResponseEntity<IsLicenseExpiredDTO> isLicenseExpired(@RequestBody LicenseRequestParam licenseRequestParam) {
         IsLicenseExpiredDTO UserLicense = userLicenseService.isLicenseExpired(licenseRequestParam);
         return new ResponseEntity<>(UserLicense, HttpStatus.OK);
