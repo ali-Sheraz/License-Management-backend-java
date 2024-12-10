@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ApplicationService {
 
-    DataTransferDTO saveApplication(Application app, Long userId);
+    DataTransferDTO saveApplication(Application app);
 
     List<Application> getAllApplications();
 

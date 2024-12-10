@@ -97,6 +97,8 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
             if (applicationOptional.isPresent()) {
                 application = applicationOptional.get();
                 application.setSubscriptionPlan(subscriptionPlan);
+                application.setMacAddress(macAddress);
+                application.setBiosId(biosId);
                 applicationRepository.save(application);
                 Optional<LicenseKey> optionalLicenseKeyValue = licenseKeyRepository.findByApplicationAppId(appId);
                 if (optionalLicenseKeyValue.isPresent()) {

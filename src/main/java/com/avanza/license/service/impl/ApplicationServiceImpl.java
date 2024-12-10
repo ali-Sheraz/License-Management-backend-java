@@ -55,7 +55,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     private UserModuleRepository userModuleRepository;
 
     @Override
-    public DataTransferDTO saveApplication(Application app, Long userId) {
+    public DataTransferDTO saveApplication(Application app) {
+        long userId = app.getOwner().getUserId();
         Optional<UserTable> ownerOptional = userTableRepository.findByUserId(userId);
         if (!ownerOptional.isPresent()) {
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID);

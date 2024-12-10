@@ -18,9 +18,9 @@ public class ApplicationController {
     @Autowired
     private ApplicationService applicationService;
 
-    @PostMapping("/application/{userId}")
-    public ResponseEntity<DataTransferDTO> saveApplication(@RequestBody Application app, @PathVariable Long userId) {
-        DataTransferDTO result = applicationService.saveApplication(app, userId);
+    @PostMapping("/application")
+    public ResponseEntity<DataTransferDTO> saveApplication(@RequestBody Application app) {
+        DataTransferDTO result = applicationService.saveApplication(app);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
