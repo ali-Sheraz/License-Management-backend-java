@@ -48,4 +48,14 @@ public class JwtUtil {
     public String extractRole(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().get("role", String.class);
     }
+    // Extract Expiration Time
+    public Long extractExpiration(String token) {
+        Date expiration = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+
+        return expiration.getTime(); // Convert to milliseconds
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/authenticate")
-    public Map<String, String> authenticate(@RequestBody Map<String, String> credentials) {
+    public Map<String, Object> authenticate(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
@@ -40,10 +41,12 @@ public class AuthenticationController {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         String jwt = jwtUtil.generateToken(userDetails.getUsername(), userDetails.getAuthorities().toString());
+        Long exp = jwtUtil.extractExpiration(jwt); // Extract expiration time
 
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
         response.put("token", jwt);
         response.put("role", userDetails.getAuthorities().toString());
+        response.put("exp", exp); // Include expiration time in the response
         return response;
     }
     @PostMapping("/register")
