@@ -89,6 +89,9 @@ public static void handleError(ErrorCode errorCode) {
             throw new CustomApplicationException("Invalid password",400);
         case INVALID_MODULE_ID:
             throw new CustomApplicationException("Invalid Module ID",400);
+        case DUPLICATE_USERNAME:
+            throw new CustomApplicationException("Duplicate username",400);
+
         default:
             throw new CustomApplicationException("Unknown error code: " + errorCode,500);
     }

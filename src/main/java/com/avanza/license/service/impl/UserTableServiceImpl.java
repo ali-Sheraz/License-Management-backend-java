@@ -28,9 +28,15 @@ private PasswordEncoder passwordEncoder;
     @Override
     public UserTable saveUser(UserTable user) {
         String email = user.getEmail();
+        String username=user.getUsername();
         Optional<UserTable> userTableOptional = userTableRepository.findByEmail(email);
         if (userTableOptional.isPresent()) {
             ErrorHandlerUtil.handleError(ErrorCode.DUPLICATE_EMAIL);
+        }
+        // Check for duplicate username
+        Optional<UserTable> userTableByUsername = userTableRepository.findByUsername(username);
+        if (userTableByUsername.isPresent()) {
+            ErrorHandlerUtil.handleError(ErrorCode.DUPLICATE_USERNAME);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         // Save the user
