@@ -14,6 +14,6 @@ public interface UserSubscriptionPlanService {
 
     UserSubscriptionPlan getUserSubscriptionByUserIdAndAppId(Long userId, Long appId);
 
-    DataTransferDTO updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId,String macAddress,String biosId);
+    DataTransferDTO updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId,String fqdn,String biosId);
 //UserLicense updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId);
 }

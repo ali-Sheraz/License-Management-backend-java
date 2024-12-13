@@ -149,7 +149,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 //            SecretKey secretKey = generateSecretKey();
 //            String encryptedKey = encryptLicenseKey(clientId, secretKey);
 
-            String encryptedKey = application.getBiosId() + application.getMacAddress();
+            String encryptedKey = application.getBiosId() + application.getFqdn();
             String generatedHexKey=generateSha256Hash(encryptedKey);
 
             LicenseKey licenseKey = new LicenseKey();
