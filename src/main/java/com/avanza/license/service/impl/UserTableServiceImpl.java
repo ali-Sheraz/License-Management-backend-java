@@ -76,7 +76,7 @@ private PasswordEncoder passwordEncoder;
         if (existingUserOptional.isPresent()) {
             UserTable existingUser = existingUserOptional.get();
             existingUser.setUsername(user.getUsername());
-            existingUser.setPassword(user.getPassword());
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
             existingUser.setEmail(user.getEmail());
             existingUser.setUpdatedOn(new Date());
             existingUser.setUpdatedBy(user.getUpdatedBy());

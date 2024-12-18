@@ -31,22 +31,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-//                .antMatchers("/v1/authenticate/**","/v1/register/**", "/h2/**","/v1/**").permitAll()  // Allow authentication endpoint
-                .antMatchers("/v1/authenticate/**","/v1/register/**", "/h2/**").permitAll()
-                .antMatchers("/v2/userTable/**").hasRole("ADMIN")  // Only allow admins to access user table
-                .anyRequest().authenticated()  // Any other request requires authentication
+                .antMatchers("/v1/authenticate/**", "/v1/register/**", "/h2/**").permitAll() // Publicly accessible endpoints
+                .antMatchers("/v1/**").hasAnyRole("USER", "ADMIN") // Both USER and ADMIN can access /v1/**
+                .antMatchers("/v2/**").hasRole("ADMIN") // Only ADMIN can access /v2/**
+                .anyRequest().authenticated() // All other endpoints require authentication
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // Handle unauthorized access
-                .accessDeniedHandler(new CustomAccessDeniedHandler())  // Handle forbidden access
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint) // Handle unauthorized access
+                .accessDeniedHandler(new CustomAccessDeniedHandler()) // Handle forbidden access
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // Stateless authentication
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless authentication
                 .and()
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);  // Add JWT filter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
-        http.headers().frameOptions().disable();  // Disable frame options (required for H2 console)
+        http.headers().frameOptions().disable(); // Allow H2 console access
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

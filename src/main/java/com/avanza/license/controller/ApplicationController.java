@@ -12,43 +12,42 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
 public class ApplicationController {
 
     @Autowired
     private ApplicationService applicationService;
 
-    @PostMapping("/application")
+    @PostMapping("/v2/application")
     public ResponseEntity<DataTransferDTO> saveApplication(@RequestBody Application app) {
         DataTransferDTO result = applicationService.saveApplication(app);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    @PutMapping("/application/{appId}")
+    @PutMapping("/v2/application/{appId}")
     public ResponseEntity<Application> updateApplication(@PathVariable Long appId, @RequestBody Application updatedApp) {
         Application result = applicationService.updateApplication(appId, updatedApp);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @DeleteMapping("/application/{appId}")
+    @DeleteMapping("/v1/application/{appId}")
     public ResponseEntity<Void> deleteApplication(@PathVariable Long appId) {
         applicationService.deleteApplication(appId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/application")
+    @GetMapping("/v1/application")
     public ResponseEntity<List<Application>> getAllApplication() {
         List<Application> applications = applicationService.getAllApplications();
         return new ResponseEntity<>(applications, HttpStatus.OK);
     }
-    @GetMapping("/application/{userId}")
+    @GetMapping("/v1/application/{userId}")
     public ResponseEntity<List<Application>> getAppByUserId(@PathVariable Long userId) {
         List<Application> applications = applicationService.getAppByUserId(userId);
         return new ResponseEntity<>(applications, HttpStatus.OK);
 
     }
 
-    @GetMapping("/oneapplication/{appId}")
+    @GetMapping("/v1/oneapplication/{appId}")
     public ResponseEntity<Application> getAppById(@PathVariable Long appId) {
         Application application = applicationService.getAppById(appId);
         return new ResponseEntity<>(application, HttpStatus.OK);

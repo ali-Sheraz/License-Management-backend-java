@@ -11,32 +11,31 @@ import com.avanza.license.entity.Module;
 import com.avanza.license.service.ModuleService;
 
 @RestController
-@RequestMapping("/v1")
 public class ModuleController {
     @Autowired
     private ModuleService moduleService;
 
-    @PostMapping("/module")
+    @PostMapping("/v2/module")
     public ResponseEntity<Module> saveModules(@RequestBody Module module) {
         Module result = moduleService.saveModule(module);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
-    @GetMapping("/module/{moduleId}")
+    @GetMapping("/v1/module/{moduleId}")
     public ResponseEntity<Module> getModuleById(@PathVariable Long moduleId) {
         Module module = moduleService.getModuleById(moduleId);
         return new ResponseEntity<>(module, HttpStatus.OK);
     }
-    @GetMapping("/allmodule")
+    @GetMapping("/v1/allmodule")
     public ResponseEntity<List<Module>> getAllModules() {
         List<Module> module = moduleService.getAllModule();
         return new ResponseEntity<>(module, HttpStatus.OK);
     }
-    @GetMapping("/getmodule/{applicationName}")
+    @GetMapping("/v1/getmodule/{applicationName}")
     public ResponseEntity<List<Module>> getAllModulesByApplicationName(@PathVariable String applicationName) {
         List<Module> module = moduleService.getAllModuleByApplicationName(applicationName);
         return new ResponseEntity<>(module, HttpStatus.OK);
     }
-    @PutMapping("/module/{moduleId}")
+    @PutMapping("/v2/module/{moduleId}")
     public ResponseEntity<Module> updateModule(@PathVariable Long moduleId, @RequestBody Module updatedModule) {
         Module module = moduleService.updatedModule(moduleId, updatedModule);
         return new ResponseEntity<>(module, HttpStatus.OK);

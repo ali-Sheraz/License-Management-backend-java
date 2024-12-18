@@ -10,24 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1")
 public class SubscriptionPlanController {
 
     @Autowired
     private SubscriptionPlanService subscriptionPlanService;
 
-    @PostMapping("/subscriptionPlan")
+    @PostMapping("/v2/subscriptionPlan")
     public ResponseEntity<SubscriptionPlan> saveSubscriptionPlan(@RequestBody SubscriptionPlan subscriptionPlan) {
         SubscriptionPlan savedSubscriptionPlan = subscriptionPlanService.saveSubscriptionPlan(subscriptionPlan);
         return new ResponseEntity<>(savedSubscriptionPlan,HttpStatus.CREATED);
     }
 
-    @GetMapping("/subscriptionPlan")
+    @GetMapping("/v1/subscriptionPlan")
     public ResponseEntity<List<SubscriptionPlan>> getAllSubscriptionPlan() {
         List<SubscriptionPlan> subscriptionPlans = subscriptionPlanService.getAllSubscriptionPlans();
         return new ResponseEntity<>(subscriptionPlans, HttpStatus.OK);
     }
-    @GetMapping("/subscriptionPlan/{subscriptionType}")
+    @GetMapping("/v1/subscriptionPlan/{subscriptionType}")
     public ResponseEntity<List<SubscriptionPlan>> getAllSubscriptionPlanByType(@PathVariable String subscriptionType ) {
         List<SubscriptionPlan> subscriptionPlans = subscriptionPlanService.getAllSubscriptionPlansByType(subscriptionType);
         return new ResponseEntity<>(subscriptionPlans, HttpStatus.OK);
