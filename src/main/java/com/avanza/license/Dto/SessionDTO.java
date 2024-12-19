@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class SessionDTO {
     private String sessionId;
     private Long appId;
+    private Long userId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 }

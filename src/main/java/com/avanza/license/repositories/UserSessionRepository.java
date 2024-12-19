@@ -21,5 +21,8 @@ public interface UserSessionRepository extends CrudRepository<UserSession, UserS
     boolean existsBySessionIdAndApplicationAppId(String sessionId, Long appId);
 
     void deleteBySessionIdAndApplicationAppId(String sessionId, Long appId);
+    long countByUserTable_UserIdAndApplication_AppId(Long userId, Long appId);
+
+
 
 }

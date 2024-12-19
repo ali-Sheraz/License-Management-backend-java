@@ -76,6 +76,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
         SubscriptionPlan subscriptionPlan = subscriptionPlanOptional.get();
         app.setSubscriptionPlan(subscriptionPlan);
+        Timestamp startDate;
+        Timestamp endDate;
+        LocalDate localStartDate = LocalDate.now();
+        LocalDate localEndDate = localStartDate.plusMonths(subscriptionPlan.getDurationMonths());
+        startDate = Timestamp.valueOf(localStartDate.atStartOfDay());
+        endDate = Timestamp.valueOf(localEndDate.atStartOfDay());
+        app.setExpirationDate(endDate);
 
         List<Module> modules = app.getModules();
         if (modules == null || modules.isEmpty()) {

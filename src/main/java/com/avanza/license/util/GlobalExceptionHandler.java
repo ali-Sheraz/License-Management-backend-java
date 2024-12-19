@@ -3,11 +3,14 @@ package com.avanza.license.util;
 import com.avanza.license.util.CustomApplicationException;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -39,19 +42,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomApplicationException.class)
     public ResponseEntity<Object> handleCustomApplicationException(CustomApplicationException ex) {
-        // Get the current HTTP request dynamically
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        HttpServletRequest request = (HttpServletRequest) RequestContextHolder.currentRequestAttributes()
+                .resolveReference(RequestAttributes.REFERENCE_REQUEST);
 
+        // Build response body
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("timestamp", LocalDateTime.now());
-        responseBody.put("status", ex.getstatusCode());  // Use status code from the exception
-        responseBody.put("error", HttpStatus.valueOf(ex.getstatusCode()).getReasonPhrase());  // Use corresponding error phrase
-        responseBody.put("message", ex.getErrorMessage());  // Custom error message
-        responseBody.put("path", request.getRequestURI()); // Dynamic path from the request
+        responseBody.put("status", ex.getstatusCode());
+        responseBody.put("error", HttpStatus.valueOf(ex.getstatusCode()).getReasonPhrase());
+        responseBody.put("message", ex.getErrorMessage());
+        responseBody.put("path", request.getRequestURI());
 
-        // Dynamically set HttpStatus based on the exception status code
-        return new ResponseEntity<>(responseBody, HttpStatus.valueOf(ex.getstatusCode()));
+        // Set response headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        return new ResponseEntity<>(responseBody, headers, HttpStatus.valueOf(ex.getstatusCode()));
     }
-
 }
 

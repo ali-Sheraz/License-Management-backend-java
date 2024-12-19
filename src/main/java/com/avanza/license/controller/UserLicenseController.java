@@ -32,9 +32,15 @@ public class UserLicenseController {
         List<UserLicense> userLicenses = userLicenseService.getAllUserLicenses();
         return new ResponseEntity<>(userLicenses, HttpStatus.OK);
     }
+
+    //    @GetMapping("/v3/userLicenseKey")
+//    public ResponseEntity<UserLicenseFloatAbleDTO> isLicenseKeyValid(@RequestParam("userId") Long userId, @RequestParam("appId") Long appId, @RequestParam("loginId") String loginId, @RequestParam("keyValue") String keyValue) {
+//        UserLicenseFloatAbleDTO UserLicense = userLicenseService.isLicenseKeyValid(userId, appId,loginId, keyValue);
+//        return new ResponseEntity<>(UserLicense, HttpStatus.OK);
+//    }
     @GetMapping("/v3/userLicenseKey")
-    public ResponseEntity<UserLicenseFloatAbleDTO> isLicenseKeyValid(@RequestParam("userId") Long userId, @RequestParam("appId") Long appId, @RequestParam("loginId") String loginId, @RequestParam("keyValue") String keyValue) {
-        UserLicenseFloatAbleDTO UserLicense = userLicenseService.isLicenseKeyValid(userId, appId,loginId, keyValue);
+    public ResponseEntity<String> isLicenseKeyValid(@RequestParam("userId") Long userId, @RequestParam("appId") Long appId, @RequestParam("loginId") String loginId) {
+        String UserLicense = userLicenseService.isLicenseKeyValid(userId, appId, loginId);
         return new ResponseEntity<>(UserLicense, HttpStatus.OK);
     }
 
@@ -43,6 +49,7 @@ public class UserLicenseController {
         UserLicenseFloatAbleDTO UserLicense = userLicenseService.isLicenseKeyValidForFloatAbleMatrix(licenseRequestParam);
         return new ResponseEntity<>(UserLicense, HttpStatus.OK);
     }
+
     @PostMapping("/v3/isLicenseExpiredUser")
     public ResponseEntity<IsLicenseExpiredDTO> isLicenseExpired(@RequestBody LicenseRequestParam licenseRequestParam) {
         IsLicenseExpiredDTO UserLicense = userLicenseService.isLicenseExpired(licenseRequestParam);
@@ -54,6 +61,7 @@ public class UserLicenseController {
         SessionDTO userSession = userLicenseService.insertingSession(userId, appId, loginId);
         return new ResponseEntity<>(userSession, HttpStatus.OK);
     }
+
     @GetMapping("/v1/userLicense/{userId}")
     public ResponseEntity<List<UserLicense>> getUserLicenseByUserId(@PathVariable Long userId) {
         List<UserLicense> userLicenses = userLicenseService.getUserLicenseByUserId(userId);

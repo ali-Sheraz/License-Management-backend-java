@@ -14,8 +14,11 @@ public interface UserLicenseService {
 
     UserLicense getLicenseByUserIdAndAppId(Long userId, Long appId);
 
-    UserLicenseFloatAbleDTO isLicenseKeyValid(Long userId, Long appId, String loginId, String keyValue);
+    //    UserLicenseFloatAbleDTO isLicenseKeyValid(Long userId, Long appId, String loginId, String keyValue);
+    String isLicenseKeyValid(Long userId, Long appId, String loginId);
+
     UserLicenseFloatAbleDTO isLicenseKeyValidForFloatAbleMatrix(LicenseRequestParam licenseRequestParam);
+
     SessionDTO insertingSession(Long userId, Long appId, String loginId);
 
     List<UserLicense> getUserLicenseByUserId(Long userId);

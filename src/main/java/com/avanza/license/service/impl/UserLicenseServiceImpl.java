@@ -45,26 +45,60 @@ public class UserLicenseServiceImpl implements UserLicenseService {
         }
         return userLicenseOptional.get();
     }
+    /**
+     * Above method for login from client through userId appId and keyValue
+     * below method is through userId and appId
+     * @return Inserted EAVs
+     */
+//    @Override
+////    @Cacheable(value = "licenseCache", key = "#userId + '-' + #appId")
+//    public UserLicenseFloatAbleDTO isLicenseKeyValid(Long userId, Long appId, String loginId, String keyValue) {
+//        Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppIdAndLicenseKeyKeyValue(userId, appId, keyValue);
+//
+//        if (userLicenseAllOptional.isEmpty()) {
+//            ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID_LICENSE_KEY);
+//        }
+//
+//        UserLicense userLicense = userLicenseAllOptional.get();
+//        Application application = userLicense.getApplication();
+//        int maxUsers = application.getMaxUsers();
+//
+//        // Convert the Timestamp to LocalDate
+//        LocalDate currentDate = LocalDate.now();
+//        LocalDate expiryDate = userLicense.getLicenseKey().getExpirationDate().toLocalDateTime().toLocalDate();
+//
+////        if (currentDate.isAfter(expiryDate)) {
+////            ErrorHandlerUtil.handleError(ErrorCode.LICENSE_KEY_EXPIRED);
+////        }
+//
+//        long userSessionCount = userSessionRepository.countByApplicationAppId(appId);
+//
+//        if (userSessionCount > maxUsers) {
+//            ErrorHandlerUtil.handleError(ErrorCode.MAX_USER_REACHED);
+//        }
+//
+//        if (userSessionCount == maxUsers && !userSessionRepository.existsBySessionIdAndApplicationAppId(loginId, appId)) {
+//            ErrorHandlerUtil.handleError(ErrorCode.MAX_USER_REACHED);
+//        }
+//
+//        return getUserLicenseFloatAbleDTO(userLicense);
+//    }
+
+    /**
+     * below method is through userId and appId
+     */
     @Override
-//    @Cacheable(value = "licenseCache", key = "#userId + '-' + #appId")
-    public UserLicenseFloatAbleDTO isLicenseKeyValid(Long userId, Long appId, String loginId, String keyValue) {
-        Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppIdAndLicenseKeyKeyValue(userId, appId, keyValue);
+    public String isLicenseKeyValid(Long userId, Long appId, String loginId) {
+        Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppId(userId, appId);
 
         if (userLicenseAllOptional.isEmpty()) {
-            ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID_LICENSE_KEY);
+            ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID);
         }
 
         UserLicense userLicense = userLicenseAllOptional.get();
         Application application = userLicense.getApplication();
         int maxUsers = application.getMaxUsers();
 
-        // Convert the Timestamp to LocalDate
-        LocalDate currentDate = LocalDate.now();
-        LocalDate expiryDate = userLicense.getLicenseKey().getExpirationDate().toLocalDateTime().toLocalDate();
-
-//        if (currentDate.isAfter(expiryDate)) {
-//            ErrorHandlerUtil.handleError(ErrorCode.LICENSE_KEY_EXPIRED);
-//        }
 
         long userSessionCount = userSessionRepository.countByApplicationAppId(appId);
 
@@ -76,13 +110,17 @@ public class UserLicenseServiceImpl implements UserLicenseService {
             ErrorHandlerUtil.handleError(ErrorCode.MAX_USER_REACHED);
         }
 
-        return getUserLicenseFloatAbleDTO(userLicense);
+        return "Valid User";
     }
+    /**
+     * below method is when unison start he hit request on it and get data from it and set in
+     * unison redis
+     */
     @Override
     public UserLicenseFloatAbleDTO isLicenseKeyValidForFloatAbleMatrix(LicenseRequestParam licenseRequestParam) {
-        long userId=licenseRequestParam.getUserId();
-        long appId=licenseRequestParam.getAppId();
-        String keyValue=licenseRequestParam.getKeyValue();
+        long userId = licenseRequestParam.getUserId();
+        long appId = licenseRequestParam.getAppId();
+        String keyValue = licenseRequestParam.getKeyValue();
         Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppIdAndLicenseKeyKeyValue(userId, appId, keyValue);
 
         if (userLicenseAllOptional.isEmpty()) {
@@ -128,6 +166,7 @@ public class UserLicenseServiceImpl implements UserLicenseService {
 
         return dto;
     }
+
     @Override
     public SessionDTO insertingSession(Long userId, Long appId, String loginId) {
         UserSession userSession = new UserSession();
@@ -154,21 +193,23 @@ public class UserLicenseServiceImpl implements UserLicenseService {
         sessionDTO.setSessionId(userSession.getSessionId());
         sessionDTO.setStartTime(userSession.getStartTime());
         sessionDTO.setEndTime(userSession.getEndTime());
+        sessionDTO.setUserId(userSession.getUserTable().getUserId());
         return sessionDTO;
     }
+
     @Override
     public List<UserLicense> getUserLicenseByUserId(Long userId) {
         return userLicenseRepository.findByUserTableUserId(userId);
     }
+
     @Override
     public IsLicenseExpiredDTO isLicenseExpired(LicenseRequestParam licenseRequestParam) {
-        long userId=licenseRequestParam.getUserId();
-        long appId=licenseRequestParam.getAppId();
-        String keyValue=licenseRequestParam.getKeyValue();
-        Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppIdAndLicenseKeyKeyValue(userId, appId, keyValue);
+        long userId = licenseRequestParam.getUserId();
+        long appId = licenseRequestParam.getAppId();
+        Optional<UserLicense> userLicenseAllOptional = userLicenseRepository.findByUserTableUserIdAndApplicationAppId(userId, appId);
 
         if (userLicenseAllOptional.isEmpty()) {
-            ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID_LICENSE_KEY);
+            ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID);
         }
 
         UserLicense userLicense = userLicenseAllOptional.get();
@@ -182,6 +223,7 @@ public class UserLicenseServiceImpl implements UserLicenseService {
         }
         return getIsLicenseExpiredDTO(userLicense);
     }
+
     private IsLicenseExpiredDTO getIsLicenseExpiredDTO(UserLicense userLicense) {
         IsLicenseExpiredDTO dto = new IsLicenseExpiredDTO();
         dto.setExpirationDate(Timestamp.valueOf(userLicense.getLicenseKey().getExpirationDate().toLocalDateTime()));

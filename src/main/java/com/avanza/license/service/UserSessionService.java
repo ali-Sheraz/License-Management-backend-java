@@ -14,5 +14,7 @@ public interface UserSessionService {
 //    UserSession getUserSessionById(Long sessionId);
    List<UserSession> getUserSessionByUserId(Long userId);
 
+   long getSessionCount(Long userId,Long appId);
+
 
 }

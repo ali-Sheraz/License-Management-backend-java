@@ -1069,3 +1069,6 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: E:/License-Manag
 	at org.h2.mvstore.FileStore.open(FileStore.java:128)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:452)
 	... 137 more
+2024-12-18 17:57:52 jdbc[24]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]USER_SUBSCRIPTION_PLANS"; expected "UPDATE, USE"; SQL statement:
+USER_SUBSCRIPTION_PLANS [42001-214]

@@ -66,6 +66,10 @@ public class Application {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
 
+
+    @Column(name = "EXPIRATION_DATE")
+    private java.sql.Timestamp expirationDate;
+
 // @Transient
     // private CertificateDetails certificateDetails;
     // @OneToMany(mappedBy = "application", cascade = CascadeType.ALL, orphanRemoval = true)

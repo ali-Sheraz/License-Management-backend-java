@@ -78,6 +78,9 @@ public class UserSessionServiceImpl implements UserSessionService {
     public List<UserSession> getUserSessionByUserId(Long userId) {
         return userSessionRepository.findByUserTableUserId(userId);
     }
+    public long getSessionCount(Long userId, Long appId) {
+        return userSessionRepository.countByUserTable_UserIdAndApplication_AppId(userId, appId);
+    }
 
 //    @Override
 //    public UserSession getUserSessionById(Long sessionId) {
