@@ -18,5 +18,6 @@ public interface ApplicationService {
     Application getAppById(Long appId);
 
     List<Application> getAppByUserId(Long userId);
+    List<Application> findApplicationsByUsername(String username);
 
 }

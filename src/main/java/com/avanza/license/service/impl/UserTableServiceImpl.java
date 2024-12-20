@@ -39,6 +39,7 @@ private PasswordEncoder passwordEncoder;
             ErrorHandlerUtil.handleError(ErrorCode.DUPLICATE_USERNAME);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole("USER");
         // Save the user
         UserTable savedUser = userTableRepository.save(user);
 

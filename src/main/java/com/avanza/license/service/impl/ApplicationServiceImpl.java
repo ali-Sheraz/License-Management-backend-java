@@ -288,7 +288,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     public List<Application> getAllApplications() {
         return applicationRepository.findAll();
     }
-
+    @Override
+    public List<Application> findApplicationsByUsername(String username) {
+        return applicationRepository.findByOwnerUsername(username);
+    }
     @Override
     public List<Application> getAppByUserId(Long userId) {
         return applicationRepository.findByOwnerUserId(userId);

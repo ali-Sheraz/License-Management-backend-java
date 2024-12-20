@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface ApplicationRepository extends CrudRepository<Application, Long> {
     Optional<Application> findByAppId(Long userId);
-
+    List<Application> findByOwnerUsername(String username);
     void deleteByAppId(Long appId);
     List<Application> findAll();
 

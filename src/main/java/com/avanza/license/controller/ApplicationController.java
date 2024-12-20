@@ -52,4 +52,9 @@ public class ApplicationController {
         Application application = applicationService.getAppById(appId);
         return new ResponseEntity<>(application, HttpStatus.OK);
     }
+    @GetMapping("/v1/search")
+    public ResponseEntity<List<Application>> searchApplicationsByUsername(@RequestParam String username) {
+        List<Application> applications = applicationService.findApplicationsByUsername(username);
+        return ResponseEntity.ok(applications);
+    }
 }
