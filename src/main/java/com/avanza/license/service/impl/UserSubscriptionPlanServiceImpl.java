@@ -70,7 +70,8 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
             Timestamp endDate;
 
             if ("general".equalsIgnoreCase(subscriptionPlan.getSubscriptionType()) ||
-                    "General".equalsIgnoreCase(subscriptionPlan.getSubscriptionType())) {
+                    "monthly".equalsIgnoreCase(subscriptionPlan.getSubscriptionType()) ||
+                    "yearly".equalsIgnoreCase(subscriptionPlan.getSubscriptionType())) {
                 LocalDate localStartDate = LocalDate.now();
                 LocalDate localEndDate = localStartDate.plusMonths(subscriptionPlan.getDurationMonths());
                 startDate = Timestamp.valueOf(localStartDate.atStartOfDay());

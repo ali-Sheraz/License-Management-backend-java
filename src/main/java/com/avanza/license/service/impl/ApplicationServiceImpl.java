@@ -182,7 +182,8 @@ public class ApplicationServiceImpl implements ApplicationService {
             Timestamp endDate;
 
             if ("general".equalsIgnoreCase(subscriptionPlan.getSubscriptionType()) ||
-                    "General".equalsIgnoreCase(subscriptionPlan.getSubscriptionType())) {
+                    "monthly".equalsIgnoreCase(subscriptionPlan.getSubscriptionType()) ||
+                    "yearly".equalsIgnoreCase(subscriptionPlan.getSubscriptionType())) {
                 LocalDate localStartDate = LocalDate.now();
                 LocalDate localEndDate = localStartDate.plusMonths(subscriptionPlan.getDurationMonths());
                 startDate = Timestamp.valueOf(localStartDate.atStartOfDay());
@@ -271,7 +272,19 @@ public class ApplicationServiceImpl implements ApplicationService {
             }
         }
         existingApp.setModules(existingModules);
-        return applicationRepository.save(existingApp);
+        Application upApp= applicationRepository.save(existingApp);
+        // Log the action in the AuditLog
+        AuditLog auditLog = new AuditLog();
+        auditLog.setAction("Update");
+        auditLog.setEntityName("Application");
+        auditLog.setEntityId(upApp.getAppId());
+        auditLog.setCreatedOn(new Date());
+        auditLog.setCreatedBy(upApp.getCreatedBy()); // Assuming you set `createdBy` during user registration
+        auditLog.setDetails("Application Updated");
+
+        auditLogRepository.save(auditLog); // Save the audit log entry
+        return upApp;
+
     }
 
     @Override
