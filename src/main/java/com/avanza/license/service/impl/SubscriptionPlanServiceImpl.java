@@ -1,15 +1,14 @@
 package com.avanza.license.service.impl;
 
 
+import com.avanza.license.entity.AuditLog;
 import com.avanza.license.entity.SubscriptionPlan;
-import com.avanza.license.repositories.ApplicationRepository;
-import com.avanza.license.repositories.SubscriptionPlanRepository;
-import com.avanza.license.repositories.UserSubscriptionPlanRepository;
-import com.avanza.license.repositories.UserTableRepository;
+import com.avanza.license.repositories.*;
 import com.avanza.license.service.SubscriptionPlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -27,9 +26,23 @@ public class SubscriptionPlanServiceImpl implements SubscriptionPlanService {
     @Autowired
     private ApplicationRepository applicationRepository;
 
+    @Autowired
+    private AuditLogRepository auditLogRepository;
+
+
     @Override
     public SubscriptionPlan saveSubscriptionPlan(SubscriptionPlan subscriptionPlan) {
-        return subscriptionPlanRepository.save(subscriptionPlan);
+        SubscriptionPlan subplan= subscriptionPlanRepository.save(subscriptionPlan);
+        // Log the action in the AuditLog
+        AuditLog auditLog = new AuditLog();
+        auditLog.setAction("REGISTER");
+        auditLog.setEntityName("SubscriptionPlan");
+        auditLog.setEntityId(subplan.getSubscriptionId());
+        auditLog.setCreatedOn(new Date());
+        auditLog.setCreatedBy(subplan.getCreatedBy()); // Assuming you set `createdBy` during user registration
+        auditLog.setDetails("SubscriptionPlan Registered");
+        auditLogRepository.save(auditLog);
+        return subplan;
     }
     @Override
     public List<SubscriptionPlan> getAllSubscriptionPlans() {

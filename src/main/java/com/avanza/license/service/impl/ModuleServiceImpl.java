@@ -36,7 +36,7 @@ public class ModuleServiceImpl implements ModuleService {
         auditLog.setEntityId(module.getModuleId());
         auditLog.setCreatedOn(new Date());
         auditLog.setCreatedBy(module.getCreatedBy()); // Assuming you set `createdBy` during user registration
-        auditLog.setDetails("Module registered");
+        auditLog.setDetails("Module Registered");
         auditLogRepository.save(auditLog);
         return savedModule;
     }

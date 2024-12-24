@@ -114,7 +114,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         auditLog.setEntityId(savedApplication.getAppId());
         auditLog.setCreatedOn(new Date());
         auditLog.setCreatedBy(app.getCreatedBy()); // Assuming you set `createdBy` during user registration
-        auditLog.setDetails("Application registered");
+        auditLog.setDetails("Application Registered");
 
         auditLogRepository.save(auditLog); // Save the audit log entry
         return getDataTransferDTO(savedUserLicense, validModules);
