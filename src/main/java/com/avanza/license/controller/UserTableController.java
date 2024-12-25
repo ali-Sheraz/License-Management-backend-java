@@ -46,4 +46,9 @@ public class UserTableController {
         userTableService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/usercount")
+    public ResponseEntity<Long> userCount() {
+        long count = userTableService.userCount();
+        return ResponseEntity.ok(count); // Return a ResponseEntity with the count and HTTP status 200
+    }
 }

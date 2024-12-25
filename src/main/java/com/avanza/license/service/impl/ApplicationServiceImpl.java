@@ -296,6 +296,9 @@ public class ApplicationServiceImpl implements ApplicationService {
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_APP_ID);
         }
     }
+    public long applicationCount() {
+        return applicationRepository.count();
+    }
 
     @Override
     public List<Application> getAllApplications() {

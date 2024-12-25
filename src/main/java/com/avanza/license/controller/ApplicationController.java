@@ -57,4 +57,9 @@ public class ApplicationController {
         List<Application> applications = applicationService.findApplicationsByUsername(username);
         return ResponseEntity.ok(applications);
     }
+    @GetMapping("/v1/applicationcount")
+    public ResponseEntity<Long> applicationCount() {
+        long count = applicationService.applicationCount();
+        return ResponseEntity.ok(count); // Return a ResponseEntity with the count and HTTP status 200
+    }
 }

@@ -60,7 +60,7 @@ public static void handleError(ErrorCode errorCode) {
         case INVALID_APP_ID:
             throw new CustomApplicationException("Invalid APP ID provided.",400);
         case INVALID_USER_ID_APP_ID:
-            throw new CustomApplicationException("Invalid USER ID & APP ID provided.",400);
+            throw new CustomApplicationException("Invalid USER ID & APP ID provided.",411);
         case INVALID_SESSION_ID_APP_ID:
             throw new CustomApplicationException("Invalid Session ID & APP ID provided.",400);
         case INVALID_SUBSCRIPTION_ID:

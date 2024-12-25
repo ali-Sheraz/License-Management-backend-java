@@ -45,6 +45,11 @@ public class UserSessionController {
         long count = userSessionService.getSessionCount(userId, appId);
         return ResponseEntity.ok(count); // Return a ResponseEntity with the count and HTTP status 200
     }
+    @GetMapping("/v1/allsessioncount")
+    public ResponseEntity<Long> getAllSessionCount() {
+        long count = userSessionService.getAllSessionCount();
+        return ResponseEntity.ok(count); // Return a ResponseEntity with the count and HTTP status 200
+    }
 
 //    @DeleteMapping("/v1/userSession/{sessionId}")
 //    public ResponseEntity<Void> deleteUserSession(@PathVariable String sessionId) {

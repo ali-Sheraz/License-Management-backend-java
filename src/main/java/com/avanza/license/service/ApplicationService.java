@@ -9,6 +9,8 @@ public interface ApplicationService {
 
     DataTransferDTO saveApplication(Application app);
 
+    long applicationCount();
+
     List<Application> getAllApplications();
 
     Application updateApplication(Long appId, Application updatedApp);
@@ -18,6 +20,7 @@ public interface ApplicationService {
     Application getAppById(Long appId);
 
     List<Application> getAppByUserId(Long userId);
+
     List<Application> findApplicationsByUsername(String username);
 
 }

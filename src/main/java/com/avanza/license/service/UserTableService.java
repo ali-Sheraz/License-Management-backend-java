@@ -9,5 +9,6 @@ public interface UserTableService {
     List<UserTable> getAllUsers(); // Change return type to List
     UserTable updateUser(Long userId, UserTable user);
     void deleteUser(Long userId);
+    long userCount();
     UserTable getUserById(Long userId);
 }

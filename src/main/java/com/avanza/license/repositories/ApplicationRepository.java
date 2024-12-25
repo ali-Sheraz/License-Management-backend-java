@@ -14,7 +14,7 @@ public interface ApplicationRepository extends CrudRepository<Application, Long>
     List<Application> findByOwnerUsername(String username);
     void deleteByAppId(Long appId);
     List<Application> findAll();
-
+    long count();
     List<Application> findByOwnerUserId(Long userId);
 
     Boolean existsByAppId(Long appId);

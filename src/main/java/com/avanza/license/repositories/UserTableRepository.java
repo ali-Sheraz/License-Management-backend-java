@@ -12,6 +12,7 @@ public interface UserTableRepository extends CrudRepository<UserTable, Long> {
     Optional<UserTable> findByEmail(String email);
     Optional<UserTable> findByUsername(String username);
     List<UserTable> findAll();
+    long count();
     void deleteByUserId(Long userId);
 }
 

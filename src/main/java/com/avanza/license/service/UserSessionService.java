@@ -5,16 +5,19 @@ import com.avanza.license.entity.UserSession;
 import java.util.List;
 
 public interface UserSessionService {
-    UserSession saveUserSession(UserSession userSession,Long userId,Long appId);
+    UserSession saveUserSession(UserSession userSession, Long userId, Long appId);
+
     List<UserSession> getAllUserSessions();
-//    void deleteUserSession(String sessionId);
 
-    void deleteUserSessionRow(Long appId,String sessionId);
+    //    void deleteUserSession(String sessionId);
+    long getAllSessionCount();
 
-//    UserSession getUserSessionById(Long sessionId);
-   List<UserSession> getUserSessionByUserId(Long userId);
+    void deleteUserSessionRow(Long appId, String sessionId);
 
-   long getSessionCount(Long userId,Long appId);
+    //    UserSession getUserSessionById(Long sessionId);
+    List<UserSession> getUserSessionByUserId(Long userId);
+
+    long getSessionCount(Long userId, Long appId);
 
 
 }

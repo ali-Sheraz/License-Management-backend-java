@@ -112,6 +112,8 @@ private PasswordEncoder passwordEncoder;
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID);
         }
     }
-
+    public long userCount() {
+        return userTableRepository.count();
+    }
 
 }
