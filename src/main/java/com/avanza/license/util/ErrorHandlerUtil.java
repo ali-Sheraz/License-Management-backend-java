@@ -140,7 +140,10 @@ public static void handleError(ErrorCode errorCode) {
 //            }
 //        }
 
-    // Helper method to extract organization name from subject string
+    /**
+     *
+     *  Helper method to extract organization name from subject string
+     */
     public static String getOrganizationName(String subject) {
         String[] parts = subject.split(",");
         for (String part : parts) {
@@ -151,7 +154,10 @@ public static void handleError(ErrorCode errorCode) {
         return ""; // Return an empty string if organization name is not found
     }
 
-    // Helper method to extract common name from subject string
+    /**
+     *
+     *  Helper method to extract common name from subject string
+     */
     public static String getCommonName(String subject) {
         String[] parts = subject.split(",");
         for (String part : parts) {
@@ -161,6 +167,10 @@ public static void handleError(ErrorCode errorCode) {
         }
         return ""; // Return an empty string if common name is not found
     }
+    /**
+     *
+     *  Helper method to extract application id from subject string
+     */
     public static String getApplicationId(String subject) {
         String[] parts = subject.split(",");
         for (String part : parts) {
@@ -171,6 +181,10 @@ public static void handleError(ErrorCode errorCode) {
         }
         return ""; // Return an empty string if the key is not found
     }
+    /**
+     *
+     *  Helper method to extract user id from subject string
+     */
     public static String getUserId(String subject) {
         String[] parts = subject.split(",");
         for (String part : parts) {
@@ -181,7 +195,10 @@ public static void handleError(ErrorCode errorCode) {
         }
         return ""; // Return an empty string if the key is not found
     }
-
+    /**
+     *
+     *  Helper method to extract max user from subject string
+     */
 
     public static int getMaxUser(String subject) {
         String[] parts = subject.split(",");
@@ -194,6 +211,10 @@ public static void handleError(ErrorCode errorCode) {
         }
         return 0; // Return a default value (e.g., 0) if the key is not found
     }
+    /**
+     *
+     *  Helper method to extract module list from subject string
+     */
     public static List<String> getModulesList(String subject) {
         // Regular expression to match key-value pairs, including quoted values
         Pattern pattern = Pattern.compile("([^=,]+)=(\"[^\"]*\"|[^,]*)");
@@ -213,6 +234,10 @@ public static void handleError(ErrorCode errorCode) {
 
         return new ArrayList<>(); // Return an empty list if the key is not found
     }
+    /**
+     *
+     *  Helper method to extract licnense key from subject string
+     */
     public static String getLicneseKey(String subject) {
         String[] parts = subject.split(",");
         for (String part : parts) {
