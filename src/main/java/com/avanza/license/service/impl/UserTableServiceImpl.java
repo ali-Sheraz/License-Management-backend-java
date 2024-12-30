@@ -50,7 +50,7 @@ private PasswordEncoder passwordEncoder;
         auditLog.setEntityId(savedUser.getUserId());
         auditLog.setCreatedOn(new Date());
         auditLog.setCreatedBy(user.getCreatedBy()); // Assuming you set `createdBy` during user registration
-        auditLog.setDetails("User registered");
+        auditLog.setDetails("User Registered");
 
         auditLogRepository.save(auditLog); // Save the audit log entry
 

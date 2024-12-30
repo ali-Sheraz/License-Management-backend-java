@@ -275,7 +275,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application upApp= applicationRepository.save(existingApp);
         // Log the action in the AuditLog
         AuditLog auditLog = new AuditLog();
-        auditLog.setAction("Update");
+        auditLog.setAction("UPDATE");
         auditLog.setEntityName("Application");
         auditLog.setEntityId(upApp.getAppId());
         auditLog.setCreatedOn(new Date());
