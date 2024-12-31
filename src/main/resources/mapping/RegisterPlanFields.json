@@ -1,0 +1,63 @@
+[
+  {
+    "key": "Unison",
+    "label": "Select Modules",
+    "inputType": "comboBox"
+  },
+  {
+    "key": "Unison",
+    "label": "Max User",
+    "inputType": "text"
+  },
+  {
+    "key": "Unison",
+    "label": "Bios Number",
+    "inputType": "text"
+  },
+  {
+    "key": "Unison",
+    "label": "FQDN",
+    "inputType": "text"
+  },
+  {
+    "key": "Unison",
+    "label": "Description",
+    "inputType": "text"
+  },
+  {
+    "key": "Unison",
+    "label": "Select Subscription Plan",
+    "inputType": "comboBox"
+  },
+  {
+    "key": "RDV",
+    "label": "Channel",
+    "inputType": "text"
+  },
+  {
+    "key": "RDV",
+    "label": "Connector",
+    "inputType": "text"
+  },
+  {
+    "key": "RDV",
+    "label": "Bios Number",
+    "inputType": "text"
+  },
+  {
+    "key": "RDV",
+    "label": "FQDN",
+    "inputType": "text"
+  },
+  {
+    "key": "RDV",
+    "label": "Description",
+    "inputType": "text"
+  },
+  {
+    "key": "RDV",
+    "label": "Select Subscription Plan",
+    "inputType": "comboBox"
+  }
+
+]
