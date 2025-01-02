@@ -2,61 +2,73 @@
   {
     "key": "Unison",
     "label": "Select Modules",
+    "bkey": "modules",
     "inputType": "comboBox"
   },
   {
     "key": "Unison",
-    "label": "Max User",
+    "label": "Max Users",
+    "bkey": "maxUsers",
     "inputType": "text"
   },
   {
     "key": "Unison",
     "label": "Bios Number",
+    "bkey": "biosId",
     "inputType": "text"
   },
   {
     "key": "Unison",
     "label": "FQDN",
+    "bkey": "fqdn",
     "inputType": "text"
   },
   {
     "key": "Unison",
     "label": "Description",
+    "bkey": "description",
     "inputType": "text"
   },
   {
     "key": "Unison",
     "label": "Select Subscription Plan",
+    "bkey": "subscriptionPlan",
     "inputType": "comboBox"
   },
   {
     "key": "RDV",
     "label": "Channel",
-    "inputType": "text"
+    "bkey": "modules",
+    "inputType": "comboBox"
   },
   {
     "key": "RDV",
     "label": "Connector",
+    "bkey": "maxUsers",
     "inputType": "text"
   },
   {
     "key": "RDV",
     "label": "Bios Number",
+    "bkey": "biosId",
     "inputType": "text"
   },
   {
     "key": "RDV",
     "label": "FQDN",
+    "bkey": "fqdn",
     "inputType": "text"
   },
   {
     "key": "RDV",
     "label": "Description",
+    "bkey": "description",
     "inputType": "text"
   },
   {
     "key": "RDV",
     "label": "Select Subscription Plan",
+    "bkey": "subscriptionPlan",
     "inputType": "comboBox"
   }
 

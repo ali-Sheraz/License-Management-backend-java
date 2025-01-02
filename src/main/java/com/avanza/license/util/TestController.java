@@ -9,6 +9,7 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,36 +30,37 @@ public class TestController {
     public String test() {
         return "License Management Module is  running successfully!";
     }
+
     @Value("${file.upload-dir}")  // Read the directory path from application.properties
     private String uploadDir;
 
-        @PostMapping("/upload")
-        public String uploadFile(@RequestParam("file") MultipartFile file) {
-            try {
-                // Step 1: Get the original file name
-                String originalFileName = file.getOriginalFilename();
-                if (originalFileName == null || originalFileName.isEmpty()) {
-                    return "Invalid file name.";
-                }
-
-                // Step 2: Create the path for the new file
-                Path filePath = Paths.get(uploadDir + "/" + originalFileName);
-
-                // Step 3: Delete the previous file if it exists
-                File previousFile = filePath.toFile();
-                if (previousFile.exists()) {
-                    previousFile.delete();
-                }
-
-                // Step 4: Save the new file with its original name
-                Files.write(filePath, file.getBytes());
-
-                return "File uploaded successfully!";
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "Error uploading file: " + e.getMessage();
+    @PostMapping("/upload")
+    public String uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            // Step 1: Get the original file name
+            String originalFileName = file.getOriginalFilename();
+            if (originalFileName == null || originalFileName.isEmpty()) {
+                return "Invalid file name.";
             }
+
+            // Step 2: Create the path for the new file
+            Path filePath = Paths.get(uploadDir + "/" + originalFileName);
+
+            // Step 3: Delete the previous file if it exists
+            File previousFile = filePath.toFile();
+            if (previousFile.exists()) {
+                previousFile.delete();
+            }
+
+            // Step 4: Save the new file with its original name
+            Files.write(filePath, file.getBytes());
+
+            return "File uploaded successfully!";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Error uploading file: " + e.getMessage();
         }
+    }
 
     @PostMapping("/uploadCertificateDetail")
     public ResponseEntity<String> uploadCerCertificate(@RequestParam("file") MultipartFile file) {
@@ -106,16 +108,19 @@ public class TestController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/generate-client-key")
     public String generateClientKey() {
         try {
             // Fetch BIOS UUID
             String biosUuid = getBiosUuid();
-            System.out.println("Bios ID:"+biosUuid);
+            System.out.println("Bios ID:" + biosUuid);
 
             // Fetch Ethernet MAC Address
             String ethernetMac = getEthernetMacAddress();
-            System.out.println("ethernetMac:"+ethernetMac);
+//          String macAddress=ethernetMac.replace(":", "-");
+            System.out.println("ethernetMac:" + ethernetMac);
+
 
             // Combine BIOS UUID and Ethernet MAC
             String combinedData = biosUuid + ethernetMac;
