@@ -70,9 +70,9 @@ public static void handleError(ErrorCode errorCode) {
         case INVALID_USER_ID_APP_ID_LICENSE_KEY:
             throw new CustomApplicationException("Invalid USER ID & APP ID & Key Value provided",411);
         case LICENSE_KEY_EXPIRED:
-            throw new CustomApplicationException("License Expired update your subscription plan",412);
+            throw new CustomApplicationException("License Expired update your subscription plan",413);
         case MAX_USER_REACHED:
-            throw new CustomApplicationException("Max user Reached",413);
+            throw new CustomApplicationException("Max user Reached",412);
         case ALREADY_EXIST_USER_ID_APP_ID:
             throw new CustomApplicationException("Alread exist USER ID & APP ID",400);
         case INVALID_SESSION_ID:
