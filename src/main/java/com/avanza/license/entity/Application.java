@@ -66,9 +66,11 @@ public class Application {
     @Column(name = "UPDATED_BY")
     private String updatedBy;
 
-
     @Column(name = "EXPIRATION_DATE")
     private java.sql.Timestamp expirationDate;
+
+    @Column(name = "KEY_VALUE")
+    private String keyValue;
 
 // @Transient
     // private CertificateDetails certificateDetails;

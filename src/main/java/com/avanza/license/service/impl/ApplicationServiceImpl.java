@@ -156,11 +156,11 @@ public class ApplicationServiceImpl implements ApplicationService {
 //            SecretKey secretKey = generateSecretKey();
 //            String encryptedKey = encryptLicenseKey(clientId, secretKey);
 
-            String encryptedKey = application.getBiosId() + application.getFqdn();
-            String generatedHexKey=generateSha256Hash(encryptedKey);
+//            String encryptedKey = application.getBiosId() + application.getFqdn();
+//            String generatedHexKey=generateSha256Hash(encryptedKey);
 
             LicenseKey licenseKey = new LicenseKey();
-            licenseKey.setKeyValue(generatedHexKey);
+            licenseKey.setKeyValue(application.getKeyValue());
             licenseKey.setIsActive(true);
             licenseKey.setExpirationDate(expiryDate);
             licenseKey.setApplication(application);

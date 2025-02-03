@@ -56,7 +56,7 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
     }
 
     @Override
-    public DataTransferDTO updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId,String fqdn,String biosId) {
+    public DataTransferDTO updateUserSubscriptionPlanByUserIdAndAppIdAndSubName(Long userId, Long appId, Long subscriptionId,String licenseKey) {
         Optional<UserSubscriptionPlan> userSubscriptionPlanOptonal = userSubscriptionPlanRepository.findByUserTableUserIdAndApplicationAppId(userId, appId);
         if (!userSubscriptionPlanOptonal.isPresent()) {
             ErrorHandlerUtil.handleError(ErrorCode.INVALID_USER_ID_APP_ID);
@@ -98,15 +98,16 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
             if (applicationOptional.isPresent()) {
                 application = applicationOptional.get();
                 application.setSubscriptionPlan(subscriptionPlan);
-                application.setFqdn(fqdn);
-                application.setBiosId(biosId);
+                application.setKeyValue(licenseKey);
+//                application.setFqdn(fqdn);
+//                application.setBiosId(biosId);
                 applicationRepository.save(application);
                 Optional<LicenseKey> optionalLicenseKeyValue = licenseKeyRepository.findByApplicationAppId(appId);
                 if (optionalLicenseKeyValue.isPresent()) {
                     LicenseKey keyValue = optionalLicenseKeyValue.get();
                     previousKey = keyValue.getKeyValue();
                 }
-                savedLicenseKey = updateGenerateLicenseKey(appId, application, endDate,fqdn,biosId);
+                savedLicenseKey = updateGenerateLicenseKey(appId, application, endDate,licenseKey);
                 userLicenseUpdate = self.updatedLicenseUser(userId, appId, previousKey, application, savedLicenseKey, application.getOwner());
             }
             //Saved audit log for updation of user subscriptionPlan
@@ -145,7 +146,7 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
         return dataTransferDTO;
     }
 
-    private LicenseKey updateGenerateLicenseKey(Long appId, Application application, Timestamp expiryDate,String fqdn,String biosId) {
+    private LicenseKey updateGenerateLicenseKey(Long appId, Application application, Timestamp expiryDate,String keyValue) {
         Optional<LicenseKey> licenseKeyOptional = licenseKeyRepository.findByApplicationAppId(appId);
         if (licenseKeyOptional.isPresent()) {
             LicenseKey licenseKey = licenseKeyOptional.get();
@@ -153,10 +154,10 @@ public class UserSubscriptionPlanServiceImpl implements UserSubscriptionPlanServ
 //                SecretKey secretKey = generateSecretKey();
 //                String encryptedKey = encryptLicenseKey(clientId, secretKey);
 
-                String encryptedKey = biosId + fqdn ;
-                String generatedHexKey=generateSha256Hash(encryptedKey);
+//                String encryptedKey = biosId + fqdn ;
+//                String generatedHexKey=generateSha256Hash(encryptedKey);
 
-                licenseKey.setKeyValue(generatedHexKey);
+                licenseKey.setKeyValue(keyValue);
                 licenseKey.setIsActive(true);
                 licenseKey.setExpirationDate(expiryDate);
                 licenseKey.setApplication(application);
