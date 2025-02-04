@@ -17,18 +17,6 @@
     "bkey": "keyValue",
     "inputType": "text"
   },
-//  {
-//    "key": "Unison",
-//    "label": "Bios Number",
-//    "bkey": "biosId",
-//    "inputType": "text"
-//  },
-//  {
-//    "key": "Unison",
-//    "label": "FQDN",
-//    "bkey": "fqdn",
-//    "inputType": "text"
-//  },
   {
     "key": "Unison",
     "label": "Description",
@@ -59,18 +47,6 @@
     "bkey": "keyValue",
     "inputType": "text"
   },
-//  {
-//    "key": "RDV",
-//    "label": "Bios Number",
-//    "bkey": "biosId",
-//    "inputType": "text"
-//  },
-//  {
-//    "key": "RDV",
-//    "label": "FQDN",
-//    "bkey": "fqdn",
-//    "inputType": "text"
-//  },
   {
     "key": "RDV",
     "label": "Description",
