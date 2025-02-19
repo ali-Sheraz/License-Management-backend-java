@@ -1,18 +1,13 @@
 package com.avanza.license.util;
 
 import com.avanza.license.Dto.CertificateDetails;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -193,7 +188,6 @@ public class TestController {
         }
         return "UNKNOWN_MAC";
     }
-
     private String generateSha256Hash(String data) throws Exception {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(data.getBytes("UTF-8"));
@@ -206,5 +200,4 @@ public class TestController {
         }
         return hexString.toString();
     }
-
 }
