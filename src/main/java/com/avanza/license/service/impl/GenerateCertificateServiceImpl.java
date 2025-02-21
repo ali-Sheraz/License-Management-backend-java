@@ -7,6 +7,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 @Service
 public class GenerateCertificateServiceImpl implements GenerateCertificateService {
@@ -53,6 +55,17 @@ public class GenerateCertificateServiceImpl implements GenerateCertificateServic
             if (!publicKeyResult.contains("successfully")) {
                 return "Error generating public key: " + publicKeyResult;
             }
+            String binaryString = new String(licenseKey);
+            StringBuilder decodedKey = new StringBuilder();
+
+            // Convert every 8-bit chunk back to character
+            for (int i = 0; i < binaryString.length(); i += 8) {
+                String byteChunk = binaryString.substring(i, Math.min(i + 8, binaryString.length()));
+                int charCode = Integer.parseInt(byteChunk, 2);
+                decodedKey.append((char) charCode);
+            }
+
+            licenseKey = String.valueOf(decodedKey);
 
             // Step 5: Generate CSR (Certificate Signing Request)
             String csrCommand = "openssl req -new -key \"" + decryptedKeyPath + "\" -out \"" + csrPath + "\" -config \"" + opensslConfigPath + "\" " +
@@ -67,7 +80,8 @@ public class GenerateCertificateServiceImpl implements GenerateCertificateServic
             if (!csrResult.contains("successfully")) {
                 return "Error generating CSR: " + csrResult;
             }
-
+            LocalDate today = LocalDate.now();
+            validityDays = (int) ChronoUnit.DAYS.between(today, today.plusMonths(validityDays));
             // Step 6: Generate Certificate
             String certificateCommand = "openssl x509 -req " +
                     "-days " + validityDays + " " +
